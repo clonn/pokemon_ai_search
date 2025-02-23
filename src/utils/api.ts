@@ -49,10 +49,10 @@ interface PokemonAnalysis {
 
 export async function searchPokemon(description: string): Promise<SearchResponse> {
   try {
-    // 调用 Gemini API 分析用户描述
+    // 調用 Gemini API 分析用戶描述
     const analysis = await analyzeDescription(description);
     
-    // 根据分析结果搜索匹配的宝可梦
+    // 根據分析結果搜索匹配的寶可夢
     const matchedPokemon = await fetchMatchingPokemon(analysis);
     
     return {
@@ -97,7 +97,7 @@ The final response only name must be in Traditional Chinese.`;
   console.log(text);
   
   try {
-    // 移除可能存在的 Markdown 代码块标记
+    // 移除可能存在的 Markdown 程式碼區塊標記
     const parsedData: {
       matches?: {
         types: string[];
@@ -272,11 +272,30 @@ function generateMatchReason(pokemon: Pokemon, analysis: PokemonAnalysis): strin
   
   // 添加类型匹配原因
   const types = pokemon.types.map(t => t.type.name).join('、');
-  reasons.push(`属性为${types}`);
+  const matchingTypes = analysis.types.filter(type =>
+    pokemon.types.some(t => t.type.name.toLowerCase() === type.toLowerCase())
+  );
+  if (matchingTypes.length > 0) {
+    reasons.push(`符合${matchingTypes.join('、')}屬性`);
+  } else {
+    reasons.push(`屬性為${types}`);
+  }
   
   // 添加特性匹配原因
   const abilities = pokemon.abilities.map(a => a.ability.name).join('、');
-  reasons.push(`具有${abilities}等特性`);
+  const matchingAbilities = analysis.abilities.filter(ability =>
+    pokemon.abilities.some(a => a.ability.name.toLowerCase().includes(ability.toLowerCase()))
+  );
+  if (matchingAbilities.length > 0) {
+    reasons.push(`具有${matchingAbilities.join('、')}等特性`);
+  } else {
+    reasons.push(`具有${abilities}等特性`);
+  }
+  
+  // 添加特徵描述（如果有）
+  if (analysis.characteristics.length > 0) {
+    reasons.push(`具備${analysis.characteristics.join('、')}等特徵`);
+  }
   
   return reasons.join('，');
 }

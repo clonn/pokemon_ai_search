@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return new Response(
       JSON.stringify({
-        error: '搜索过程中发生错误' + error,
+        error: ` Search fail: ${error}`
       }),
       {
         status: 500,

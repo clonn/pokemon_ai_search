@@ -49,8 +49,8 @@ export default function PokemonDetail({ params }: PokemonDetailProps) {
           ...pokemonData,
           name_i18n
         });
-      } catch (err) {
-        setError('取得寶可夢資訊失敗');
+      } catch (error) {
+        setError(`"取得寶可夢資訊失敗${error}"`);
       } finally {
         setIsLoading(false);
       }
