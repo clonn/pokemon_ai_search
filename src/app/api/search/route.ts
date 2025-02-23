@@ -1,4 +1,3 @@
-import { SearchResponse } from '@/types';
 import { searchPokemon } from '@/utils/api';
 
 export async function POST(request: Request) {
