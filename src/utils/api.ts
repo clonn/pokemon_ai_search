@@ -168,7 +168,7 @@ async function fetchMatchingPokemon(analysis: PokemonAnalysis) {
         const confidence = calculateMatchScore(pokemon, analysis);
         return {
           pokemon,
-          matchReason: generateMatchReason(pokemon, analysis),
+          matchReason: generateMatchReason(pokemon),
           confidence: confidence + 0.5 // 給予具體名稱匹配的額外分數
         };
       }).filter(result => result !== null);
@@ -181,7 +181,7 @@ async function fetchMatchingPokemon(analysis: PokemonAnalysis) {
           if (confidence > 0) {
             return {
               pokemon,
-              matchReason: generateMatchReason(pokemon, analysis),
+              matchReason: generateMatchReason(pokemon),
               confidence
             };
           }
@@ -222,7 +222,7 @@ async function fetchMatchingPokemon(analysis: PokemonAnalysis) {
           if (confidence > 0) {
             return {
               pokemon,
-              matchReason: generateMatchReason(pokemon, analysis),
+              matchReason: generateMatchReason(pokemon),
               confidence
             };
           }
@@ -267,35 +267,16 @@ function calculateMatchScore(pokemon: Pokemon, analysis: PokemonAnalysis): numbe
   return Math.min(1, score);
 }
 
-function generateMatchReason(pokemon: Pokemon, analysis: PokemonAnalysis): string {
+function generateMatchReason(pokemon: Pokemon): string {
   const reasons = [];
   
   // 添加类型匹配原因
   const types = pokemon.types.map(t => t.type.name).join('、');
-  const matchingTypes = analysis.types.filter(type =>
-    pokemon.types.some(t => t.type.name.toLowerCase() === type.toLowerCase())
-  );
-  if (matchingTypes.length > 0) {
-    reasons.push(`符合${matchingTypes.join('、')}屬性`);
-  } else {
-    reasons.push(`屬性為${types}`);
-  }
+  reasons.push(`属性为${types}`);
   
   // 添加特性匹配原因
   const abilities = pokemon.abilities.map(a => a.ability.name).join('、');
-  const matchingAbilities = analysis.abilities.filter(ability =>
-    pokemon.abilities.some(a => a.ability.name.toLowerCase().includes(ability.toLowerCase()))
-  );
-  if (matchingAbilities.length > 0) {
-    reasons.push(`具有${matchingAbilities.join('、')}等特性`);
-  } else {
-    reasons.push(`具有${abilities}等特性`);
-  }
-  
-  // 添加特徵描述（如果有）
-  if (analysis.characteristics.length > 0) {
-    reasons.push(`具備${analysis.characteristics.join('、')}等特徵`);
-  }
+  reasons.push(`具有${abilities}等特性`);
   
   return reasons.join('，');
 }
