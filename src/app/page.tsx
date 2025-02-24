@@ -143,40 +143,42 @@ export default function Home() {
         </div>
 
         <form onSubmit={handleSearch} className="mb-12">
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="例如：一隻可愛的、會飛的、粉色的寶可夢..."
-              className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900 px-4 py-3"
             />
-            <button
-              type="button"
-              onClick={toggleListening}
-              className={`inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isListening ? 'text-white bg-red-600 hover:bg-red-700' : 'text-white bg-gray-600 hover:bg-gray-700'}`}
-              title={isListening ? '點擊停止語音輸入' : '點擊開始語音輸入'}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={toggleListening}
+                className={`inline-flex items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isListening ? 'text-white bg-red-600 hover:bg-red-700' : 'text-white bg-gray-600 hover:bg-gray-700'}`}
+                title={isListening ? '點擊停止語音輸入' : '點擊開始語音輸入'}
               >
-                <path
-                  fillRule="evenodd"
-                  d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-            <button
-              type="submit"
-              disabled={isSearching}
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {isSearching ? '搜尋中...' : '搜尋'}
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+              <button
+                type="submit"
+                disabled={isSearching}
+                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 w-full sm:w-auto"
+              >
+                {isSearching ? '搜尋中...' : '搜尋'}
+              </button>
+            </div>
           </div>
         </form>
 
