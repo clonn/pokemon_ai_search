@@ -86,7 +86,7 @@ export function useSpeechRecognition() {
         recognition.abort();
       }
     };
-  }, [recognition]);
+  }, []); // 移除 recognition 依賴項
 
   const toggleListening = () => {
     if (!recognition) return;

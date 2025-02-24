@@ -16,18 +16,52 @@ async function initPokemonCache() {
     
     pokemonCache = new Map();
     
-    // 並行獲取所有寶可夢的詳細資訊
-    const pokemonDetails = await Promise.all(
-      data.results.map(async (pokemon: { name: string; url: string }) => {
-        const detailResponse = await fetch(pokemon.url);
-        return await detailResponse.json();
-      })
-    );
+    // 將寶可夢列表分批處理，每批 50 個
+    const batchSize = 50;
+    const batches = [];
+    for (let i = 0; i < data.results.length; i += batchSize) {
+      batches.push(data.results.slice(i, i + batchSize));
+    }
     
-    // 將詳細資訊存入緩存
-    pokemonDetails.forEach((pokemon: Pokemon) => {
-      pokemonCache?.set(pokemon.name.toLowerCase(), pokemon);
-    });
+    // 依次處理每一批
+    for (const batch of batches) {
+      const pokemonDetails = await Promise.all(
+        batch.map(async (pokemon: { name: string; url: string }) => {
+          // 添加重試機制
+          const maxRetries = 3;
+          let lastError;
+          
+          for (let attempt = 0; attempt < maxRetries; attempt++) {
+            try {
+              // 添加隨機延遲，避免請求過於密集
+              const delay = Math.random() * 30 + 50; // 500-30ms
+              await new Promise(resolve => setTimeout(resolve, delay));
+              
+              const detailResponse = await fetch(pokemon.url);
+              return await detailResponse.json();
+            } catch (error) {
+              lastError = error;
+              // 如果不是最後一次嘗試，則等待後重試
+              if (attempt < maxRetries - 1) {
+                await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+              }
+            }
+          }
+          
+          console.error(`Failed to fetch pokemon ${pokemon.name} after ${maxRetries} attempts:`, lastError);
+          return null;
+        })
+      );
+      
+      // 將成功獲取的寶可夢資料存入緩存
+      pokemonDetails
+        .filter((pokemon): pokemon is Pokemon => pokemon !== null)
+        .forEach((pokemon: Pokemon) => {
+          pokemonCache?.set(pokemon.name.toLowerCase(), pokemon);
+        });
+      
+      console.log(`Processed batch of ${batchSize} Pokemon, cache size: ${pokemonCache.size}`);
+    }
     
     console.log('Pokemon cache initialized with', pokemonCache.size, 'entries');
   } catch (error) {
