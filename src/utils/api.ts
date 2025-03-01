@@ -105,7 +105,7 @@ async function analyzeDescription(description: string): Promise<PokemonAnalysis>
   const { GoogleGenerativeAI } = await import('@google/generative-ai');
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite-preview-02-05' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-pro-exp-02-05' });
 
   const prompt = `There is the following Pokémon description and very meshing Pokémon descriptions:
 ${description.slice(0, 999)}
